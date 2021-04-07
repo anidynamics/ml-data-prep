@@ -1,23 +1,31 @@
+import os
 import click
+import pandas as pd
 
 
-# def create_dfs_from_folders(path_to_folders, manufacturer):
-#     # Print some info
-#     print("Creating dataframes from folders in " + path_to_folders + " ...")
-#     list_of_dfs = []
-#     for folder in os.scandir(path_to_folders):
-#         df_model = pd.DataFrame()
-#         for image_file in os.scandir(folder):
-#             df_model = df_model.append({'filename': os.path.basename(image_file), 'image_path': os.path.abspath(image_file), 'manufacturer': manufacturer, 'model': os.path.basename(folder)}, ignore_index=True)
-#         list_of_dfs.append(df_model)
-#     print("done","\n")
-#     return list_of_dfs
+def create_dfs_from_folders(path_to_folders):
+    # Print some info
+    print("Creating dataframes from folders in " + path_to_folders + " ...")
+    # list_of_dfs = []
+    df = pd.DataFrame()
+    for folder in os.scandir(path_to_folders):        
+        for image_file in os.scandir(folder):
+            df = df.append({'filename': os.path.basename(image_file), 'image_path': os.path.abspath(image_file), 'label': os.path.basename(folder)}, ignore_index=True)
+        # list_of_dfs.append(df_model)
+    print("done","\n")
+    df.to_csv(os.path.join(path_to_folders, 'df.csv'))
+    return
 
 
 @click.command()
-def create_dataframe():
-    print("Works")
-
+@click.help_option('--help', '-h')
+@click.option('--path', '-p', type=click.Path(exists=True), help='Path to folders')
+# @click.option('--out_dir', '-o', help='Output directory')
+def create_dataframe(path):
+    if path == None:
+        print("No path given")
+    else:
+        create_dfs_from_folders(path)
 
 if __name__ == "__main__":
     create_dataframe()
