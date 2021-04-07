@@ -4,14 +4,11 @@ import pandas as pd
 
 
 def create_dfs_from_folders(path_to_folders):
-    # Print some info
     print("Creating dataframes from folders in " + path_to_folders + " ...")
-    # list_of_dfs = []
     df = pd.DataFrame()
     for folder in os.scandir(path_to_folders):        
         for image_file in os.scandir(folder):
             df = df.append({'filename': os.path.basename(image_file), 'image_path': os.path.abspath(image_file), 'label': os.path.basename(folder)}, ignore_index=True)
-        # list_of_dfs.append(df_model)
     print("done","\n")
     df.to_csv(os.path.join(path_to_folders, 'df.csv'))
     return
